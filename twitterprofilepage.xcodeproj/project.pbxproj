@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		2863D9FE1A56B1EE00EEEE77 /* UIImage+ImageEffects.m in Sources */ = {isa = PBXBuildFile; fileRef = 2863D9FC1A56B1EE00EEEE77 /* UIImage+ImageEffects.m */; };
 		28EAEBB31A5209A10005C729 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 28EAEBB21A5209A10005C729 /* main.m */; };
 		28EAEBB61A5209A10005C729 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 28EAEBB51A5209A10005C729 /* AppDelegate.m */; };
 		28EAEBB91A5209A10005C729 /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 28EAEBB81A5209A10005C729 /* ViewController.m */; };
@@ -29,6 +30,8 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		2863D9FC1A56B1EE00EEEE77 /* UIImage+ImageEffects.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIImage+ImageEffects.m"; sourceTree = "<group>"; };
+		2863D9FD1A56B1EE00EEEE77 /* UIImage+ImageEffects.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIImage+ImageEffects.h"; sourceTree = "<group>"; };
 		28EAEBAD1A5209A10005C729 /* twitterprofilepage.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = twitterprofilepage.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		28EAEBB11A5209A10005C729 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		28EAEBB21A5209A10005C729 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
@@ -85,6 +88,8 @@
 		28EAEBAF1A5209A10005C729 /* twitterprofilepage */ = {
 			isa = PBXGroup;
 			children = (
+				2863D9FC1A56B1EE00EEEE77 /* UIImage+ImageEffects.m */,
+				2863D9FD1A56B1EE00EEEE77 /* UIImage+ImageEffects.h */,
 				28EAEBDA1A52ED690005C729 /* avatar.jpg */,
 				28EAEBD81A5234AB0005C729 /* vegetation.jpg */,
 				28EAEBD61A5209C40005C729 /* alpes.jpg */,
@@ -227,6 +232,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				2863D9FE1A56B1EE00EEEE77 /* UIImage+ImageEffects.m in Sources */,
 				28EAEBB91A5209A10005C729 /* ViewController.m in Sources */,
 				28EAEBB61A5209A10005C729 /* AppDelegate.m in Sources */,
 				28EAEBB31A5209A10005C729 /* main.m in Sources */,

@@ -160,11 +160,34 @@ This code is in the view didScroll method (forgive me for the magic numbers).
 
 ### Blur effect animation
 
-This is not done yet. Didn't have time.
+I don't really know what's the best way to do this effect. After a quick research i decided to use the ImageEffects category that i have found here:
 
+https://github.com/iGriever/TWSReleaseNotesView
+
+I read about it in this article:
+
+http://code.tutsplus.com/tutorials/adding-blur-effects-on-ios--cms-21488
+
+Thanks to this new category, i have the following method:
+
+    	- (UIImage *)applyBlurWithRadius:(CGFloat)blurRadius tintColor:(UIColor *)tintColor saturationDeltaFactor:(CGFloat)saturationDeltaFactor maskImage:(UIImage *)maskImage
+
+ I first tried to call directly this method in the _scrollViewDidScroll_ method, but of course it was freezing the UI.
+ So i decided to use a cache of the computed blurred images, and then to just use the one in cache.
+ I used 10 'discret' steps for the blurred animation:
+
+
+![blur animation](doc/blur-anim.gif "blur animation")
 
 # Credits
 
 Avatar picture:
 http://cheesyniblets.deviantart.com/art/ryu-and-sagat-15663243
+
+Blur effect:
+
+http://code.tutsplus.com/tutorials/adding-blur-effects-on-ios--cms-21488
+
+https://github.com/iGriever/TWSReleaseNotesView
+
 

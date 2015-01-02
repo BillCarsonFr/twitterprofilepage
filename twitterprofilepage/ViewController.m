@@ -7,6 +7,7 @@
 //
 
 #import "ViewController.h"
+#import "UIImage+ImageEffects.h"
 
 @interface ViewController () <UITableViewDelegate, UITableViewDataSource>
 {
@@ -16,12 +17,17 @@
     CGFloat _avatarImageSize;
     CGFloat _avatarImageCompressedSize;
     BOOL _barIsCollapsed;
+    BOOL _barAnimationComplete;
+
 }
 
 @property (weak) UITableView *tableView;
 @property (weak) UIImageView *imageHeaderView;
 @property (weak) UIVisualEffectView *visualEffectView;
 @property (strong,nonatomic) UIView *customTitleView;
+@property (strong) UIImage *originalBackgroundImage;
+
+@property (strong) NSMutableDictionary* blurredImageCache;
 
 
 @end
@@ -38,6 +44,7 @@
     _avatarImageSize = 70;
     _avatarImageCompressedSize = 44;
     _barIsCollapsed = false;
+    _barAnimationComplete = false;
     
     
     UIApplication* sharedApplication = [UIApplication sharedApplication];
@@ -57,7 +64,10 @@
     [self.view addSubview:tableView];
     views[@"tableView"] = tableView;
     
-    UIImageView* headerImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"vegetation.jpg"]];
+    UIImage* bgImage = [UIImage imageNamed:@"vegetation.jpg"];
+    _originalBackgroundImage = bgImage;
+    
+    UIImageView* headerImageView = [[UIImageView alloc] initWithImage:bgImage];
     headerImageView.translatesAutoresizingMaskIntoConstraints = NO; //autolayout
     headerImageView.contentMode = UIViewContentModeScaleAspectFill;
     headerImageView.clipsToBounds = true;
@@ -176,7 +186,9 @@
     constraint.priority = 801;
     [self.view addConstraint: constraint];
     
-    
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            [self fillBlurredImageCache];
+    });
     
 }
 
@@ -191,7 +203,11 @@
     }
 }
 
-
+- (void)dealloc{
+    _originalBackgroundImage = nil;
+    [_blurredImageCache removeAllObjects];
+    _blurredImageCache = nil;
+}
 #pragma mark - Table view data source
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
@@ -269,11 +285,14 @@
     [self.navigationController.navigationBar setShadowImage:[UIImage new]];
     [self.navigationController setNavigationBarHidden:NO animated:YES];
     self.navigationItem.titleView = nil;
-    if(self.visualEffectView){
-        [self.visualEffectView removeFromSuperview];
-        self.visualEffectView = nil;
-    }
-
+//    if(self.visualEffectView){
+//        [self.visualEffectView removeFromSuperview];
+//        self.visualEffectView = nil;
+//    }
+    
+    _barAnimationComplete = false;
+    self.imageHeaderView.image = self.originalBackgroundImage;
+    
     
     //Inverse Z-Order of avatar Image view
     [self.tableView.tableHeaderView exchangeSubviewAtIndex:1 withSubviewAtIndex:2];
@@ -282,11 +301,13 @@
 
 - (void)switchToMinifiedHeader
 {
-    UIBlurEffect *blurEffect = [UIBlurEffect effectWithStyle:UIBlurEffectStyleLight];
-    UIVisualEffectView *visualEffectView = [[UIVisualEffectView alloc] initWithEffect:blurEffect];
-    visualEffectView.frame = self.imageHeaderView.bounds;
-    self.visualEffectView = visualEffectView;
-    [self.imageHeaderView addSubview:visualEffectView];
+//    UIBlurEffect *blurEffect = [UIBlurEffect effectWithStyle:UIBlurEffectStyleLight];
+//    UIVisualEffectView *visualEffectView = [[UIVisualEffectView alloc] initWithEffect:blurEffect];
+//    visualEffectView.frame = self.imageHeaderView.bounds;
+//    self.visualEffectView = visualEffectView;
+//    [self.imageHeaderView addSubview:visualEffectView];
+    
+    _barAnimationComplete = false;
     
     self.navigationItem.titleView = self.customTitleView;
     self.navigationController.navigationBar.clipsToBounds = YES;
@@ -314,13 +335,18 @@
         _barIsCollapsed = false;
     }
     
+    //appologies for the magic numbers
     if(yPos > _headerSwitchOffset +20 && yPos <= _headerSwitchOffset +20 +40){
         CGFloat delta = (40 +20 - (yPos-_headerSwitchOffset));
         [self.navigationController.navigationBar setTitleVerticalPositionAdjustment:delta forBarMetrics:UIBarMetricsDefault];
-        
+       
+        self.imageHeaderView.image = [self blurWithImageAt:((60-delta)/60.0)];
+
     }
-    if(yPos > _headerSwitchOffset +20 +40) {
+    if(!_barAnimationComplete && yPos > _headerSwitchOffset +20 +40) {
         [self.navigationController.navigationBar setTitleVerticalPositionAdjustment:0 forBarMetrics:UIBarMetricsDefault];
+        self.imageHeaderView.image = [self blurWithImageAt:1.0];
+        _barAnimationComplete = true;
     }
     
 }
@@ -429,6 +455,55 @@
     
     return view;
 }
+
+- (UIImage *)blurWithImageAt:(CGFloat)percent
+{
+    
+    NSNumber* keyNumber = @0;
+    if(percent <= 0.1){
+        keyNumber = @1;
+    } else if(percent <= 0.2) {
+        keyNumber = @2;
+    } else if(percent <= 0.3) {
+        keyNumber = @3;
+    } else if(percent <= 0.4) {
+        keyNumber = @4;
+    } else if(percent <= 0.5) {
+        keyNumber = @5;
+    } else if(percent <= 0.6) {
+        keyNumber = @6;
+    } else if(percent <= 0.7) {
+        keyNumber = @7;
+    } else if(percent <= 0.8) {
+       keyNumber = @8;
+    } else if(percent <= 0.9) {
+       keyNumber = @9;
+    } else if(percent <= 1) {
+       keyNumber = @10;
+    }
+    UIImage* image = [_blurredImageCache objectForKey:keyNumber];
+    if(image == nil){
+        //TODO if cache not yet built, just compute and put in cache
+        return _originalBackgroundImage;
+    }
+    return image;
+}
+
+
+- (UIImage *)blurWithImageEffects:(UIImage *)image andRadius: (CGFloat) radius
+{
+    return [image applyBlurWithRadius:radius tintColor:[UIColor colorWithWhite:1 alpha:0.2] saturationDeltaFactor:1.5 maskImage:nil];
+}
+
+- (void) fillBlurredImageCache {
+    CGFloat maxBlur = 30;
+    self.blurredImageCache = [NSMutableDictionary new];
+    for (int i = 0; i <= 10; i++)
+    {
+        self.blurredImageCache[[NSNumber numberWithInt:i]] = [self blurWithImageEffects:_originalBackgroundImage andRadius:(maxBlur * i/10)];
+    }
+}
+
 
 
 @end
