@@ -5,7 +5,7 @@ This project is an attempt to mimic the twitter profile page UI (version 6.x).
 ![final](doc/capture.gif "Preview")
 
 The goal is not to do it exactly like it's done in the Twitter application, actually i don't know how they done it.
-It's just an attempt to do achieve similar effect.
+It's just an attempt to achieve similar effect.
 
 Let me explain some key points here.
 
