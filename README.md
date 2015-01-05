@@ -20,7 +20,7 @@ If you scroll up, then the image will stretch (zoom to fill).
 
 * Minified State
 
-If you scroll down, all the header is moving up, and the avatar on the left is shrinking to it's minimal size. This until the bottom of the profile banner as reach the bottom on the navbar.
+If you scroll down, all the header is moving up, and the avatar on the left is shrinking to it's minimal size. This until the bottom of the profile banner has reached the bottom on the navbar.
 
 * Blur and title arrival animation
 
